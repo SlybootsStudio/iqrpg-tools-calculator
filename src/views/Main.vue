@@ -42,8 +42,8 @@
         </div>
       </div>
       <div class="col-12 col-md-4 mb-3">
-        <span>+{{ expGained }}% exp</span><br />
-        <span>+{{ resourceGained }} base resource</span>
+        <span>+{{ resourceGained }}% resource</span><br />
+        <span>+{{ expGained }} experience</span>
       </div>
       <div class="col-12 col-md-4 mb-3">
         <div class="form-floating">
@@ -81,12 +81,35 @@ export default {
   },
   data() {
     return {
-      pricePer: 50000,
+      pricePer: 75000,
       currentToolLevel: 1,
-      targetToolLevel: 2,
+      targetToolLevel: 16,
       toolLevels: [
-        0, 10, 30, 75, 175, 400, 800, 1500, 2500, 4000, 6000, 8500, 11500,
-        15000, 19000, 23500, 28500, 34000, 40000, 47000, 55000, 65000, 77000
+        0, // 1
+        5,
+        25,
+        60,
+        150, // 5
+        350,
+        750,
+        1500,
+        2500,
+        4000, // 10
+        6000,
+        8500,
+        11500,
+        15000,
+        19000, // 15
+        23500,
+        28500,
+        34000,
+        40000,
+        47000, // 20
+        55000,
+        65000,
+        77000,
+        91000,
+        107000 // 25
       ]
     };
   },
@@ -95,18 +118,25 @@ export default {
       return this.targetToolLevel - this.currentToolLevel;
     },
     expGained() {
-      return this.levelDifference * 5;
+      return this.levelDifference * 2;
     },
     resourceGained() {
-      return this.levelDifference * 2;
+      let totalResources = 0;
+
+      let currentLevels = this.getLevelsByTier(this.currentToolLevel);
+      let currentResources = this.getResourceByLevel(currentLevels);
+
+      let targetLevels = this.getLevelsByTier(this.targetToolLevel);
+      let targetResources = this.getResourceByLevel(targetLevels);
+
+      totalResources = targetResources - currentResources;
+
+      return totalResources;
     },
     totalCost() {
       return this.componentsNeeded * this.pricePer;
     },
     componentsNeeded() {
-      //let currentComponents = this.toolLevels[this.currentToolLevel - 1];
-      //let targetComponents = this.toolLevels[this.targetToolLevel - 1];
-
       let currentComponents = this.getTotalComponents(
         this.currentToolLevel - 1
       );
@@ -126,6 +156,36 @@ export default {
       }
 
       return total;
+    },
+    getLevelsByTier(level) {
+      let tier1 = this.getByTier(level, 0, 14);
+      let tier2 = this.getByTier(level, 14, 19);
+      let tier3 = this.getByTier(level, 19, 24);
+      let tier4 = this.getByTier(level, 24, 29);
+
+      return { tier1: tier1, tier2: tier2, tier3: tier3, tier4: tier4 };
+    },
+    getResourceByLevel(levelGroup) {
+      let resources = 0;
+
+      resources += levelGroup.tier1 * 5; // tier1
+      resources += levelGroup.tier2 * 6; // tier2
+      resources += levelGroup.tier3 * 7; // tier3
+      resources += levelGroup.tier4 * 8; // tier4
+
+      return resources;
+    },
+
+    getByTier(level, min, max) {
+      if (level < min) {
+        return 0;
+      }
+
+      if (level > max) {
+        level = max;
+      }
+
+      return level - min;
     }
   }
 };

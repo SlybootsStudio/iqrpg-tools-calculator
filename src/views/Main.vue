@@ -68,6 +68,7 @@
       </div>
     </div>
   </div>
+  <small>Updated to Patch 13</small>
 </template>
 
 <script>

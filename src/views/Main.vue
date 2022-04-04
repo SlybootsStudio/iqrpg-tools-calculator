@@ -84,7 +84,7 @@ export default {
     return {
       pricePer: 75000,
       currentToolLevel: 1,
-      targetToolLevel: 16,
+      targetToolLevel: 2,
       toolLevels: [
         0, // 1
         5,

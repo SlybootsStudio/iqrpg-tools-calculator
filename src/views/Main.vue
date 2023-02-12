@@ -1,74 +1,86 @@
 <template>
-  <div class="alert alert-secondary mt-3 mb-3">
-    <div class="row">
-      <div class="col-12 col-md-4 mb-3">
-        <div class="form-floating">
-          <select class="form-select form-select-lg" v-model="currentToolLevel">
-            <option
-              v-for="(level, i) in toolLevels"
-              :key="i + 1"
-              v-bind:value="i + 1"
+  <div class="mb-3">
+    <div class="alert alert-secondary mt-3 mb-2 pb-0">
+      <div class="row">
+        <div class="col-12 col-md-4 mb-3">
+          <div class="form-floating">
+            <select
+              class="form-select form-select-lg"
+              v-model="currentToolLevel"
             >
-              {{ i + 1 }}
-            </option>
-          </select>
-          <label class="text-light fw-bold">Current tool level</label>
+              <option
+                v-for="(level, i) in toolLevels"
+                :key="i + 1"
+                v-bind:value="i + 1"
+              >
+                {{ i + 1 }}
+              </option>
+            </select>
+            <label class="text-light fw-bold">Current tool level</label>
+          </div>
         </div>
-      </div>
-      <div class="col-12 col-md-4 mb-3">
-        <div class="form-floating">
-          <select class="form-select form-select-lg" v-model="targetToolLevel">
-            <option
-              v-for="(level, i) in toolLevels"
-              :key="i + 1"
-              v-bind:value="i + 1"
+        <div class="col-12 col-md-4 mb-3">
+          <div class="form-floating">
+            <select
+              class="form-select form-select-lg"
+              v-model="targetToolLevel"
             >
-              {{ i + 1 }}
-            </option>
-          </select>
-          <label class="text-light fw-bold">Target tool level</label>
+              <option
+                v-for="(level, i) in toolLevels"
+                :key="i + 1"
+                v-bind:value="i + 1"
+              >
+                {{ i + 1 }}
+              </option>
+            </select>
+            <label class="text-light fw-bold">Target tool level</label>
+          </div>
         </div>
-      </div>
-      <div class="col-12 col-md-4 mb-3">
-        <div class="form-floating">
-          <input
-            type="number"
-            min="0"
-            step="1"
-            class="form-control form-control-lg"
-            v-model="pricePer"
-          />
-          <label class="text-light fw-bold">Gold per components</label>
+        <div class="col-12 col-md-4 mb-3">
+          <div class="form-floating">
+            <input
+              type="number"
+              min="0"
+              step="1"
+              class="form-control form-control-lg"
+              v-model="pricePer"
+            />
+            <label class="text-light fw-bold">Gold per components</label>
+          </div>
         </div>
-      </div>
-      <div class="col-12 col-md-4 mb-3">
-        <span>+{{ resourceGained }}% resource</span><br />
-        <span>+{{ expGained }} experience</span>
-      </div>
-      <div class="col-12 col-md-4 mb-3">
-        <div class="form-floating">
-          <input
-            disabled
-            class="form-control form-control-lg"
-            :value="componentsNeeded.toLocaleString()"
-          />
-          <label class="fw-bold text-light">Components needed</label>
+        <div class="col-12 col-md-4 mb-3">
+          <div class="form-floating">
+            <input
+              disabled
+              class="form-control form-control-lg"
+              :value="componentsNeeded.toLocaleString()"
+            />
+            <label class="fw-bold text-light">Components needed</label>
+          </div>
         </div>
-      </div>
 
-      <div class="col-12 col-md-4 mb-3">
-        <div class="form-floating">
-          <input
-            disabled
-            class="form-control form-control-lg"
-            :value="totalCost.toLocaleString()"
-          />
-          <label class="fw-bold text-light">Total Gold</label>
+        <div class="col-12 col-md-4 mb-3">
+          <div class="form-floating">
+            <input
+              disabled
+              class="form-control form-control-lg"
+              :value="totalCost.toLocaleString()"
+            />
+            <label class="fw-bold text-light">Total Gold Cost</label>
+          </div>
+        </div>
+        <div class="col-12 col-md-4 mb-3">
+          <div class="alert alert-success m-0 p-2">
+            <p class="m-0 p-0 fw-bold">Total Gains</p>
+            <p class="m-0 p-0">
+              +{{ resourceGained.toFixed(2) }}% Res, +{{ expGained }} XP
+            </p>
+          </div>
         </div>
       </div>
     </div>
+    <small>Updated to Patch 17</small>
   </div>
-  <small>Updated to Patch 13</small>
 </template>
 
 <script>
@@ -82,17 +94,17 @@ export default {
   },
   data() {
     return {
-      pricePer: 75000,
+      pricePer: 200000,
       currentToolLevel: 1,
       targetToolLevel: 2,
       toolLevels: [
         0, // 1
-        5,
-        25,
-        60,
-        150, // 5
+        10,
+        30,
+        75,
+        175, // 5
         350,
-        750,
+        800,
         1500,
         2500,
         4000, // 10
@@ -110,7 +122,10 @@ export default {
         65000,
         77000,
         91000,
-        107000 // 25
+        107000, // 25
+        125000,
+        145000,
+        170000
       ]
     };
   },
@@ -159,20 +174,21 @@ export default {
       return total;
     },
     getLevelsByTier(level) {
-      let tier1 = this.getByTier(level, 0, 14);
-      let tier2 = this.getByTier(level, 14, 19);
-      let tier3 = this.getByTier(level, 19, 24);
-      let tier4 = this.getByTier(level, 24, 29);
+      let tier1 = this.getByTier(level, 1, 11);
+      let tier2 = this.getByTier(level, 11, 30);
 
-      return { tier1: tier1, tier2: tier2, tier3: tier3, tier4: tier4 };
+      return { tier1: tier1, tier2: tier2 };
     },
     getResourceByLevel(levelGroup) {
       let resources = 0;
 
       resources += levelGroup.tier1 * 5; // tier1
-      resources += levelGroup.tier2 * 6; // tier2
-      resources += levelGroup.tier3 * 7; // tier3
-      resources += levelGroup.tier4 * 8; // tier4
+      let current = 5;
+      for (let x = 0; x < levelGroup.tier2; x += 1) {
+        current *= 1.05;
+        current = Math.round(current * 100) / 100;
+        resources += current;
+      }
 
       return resources;
     },
@@ -191,5 +207,3 @@ export default {
   }
 };
 </script>
-
-<style scoped></style>

@@ -1,7 +1,7 @@
 {
   "name": "iqrpg-tools-calculator",
-  "version": "1.0.0",
-  "description": "vue3 bootstrap5 boilerplate",
+  "version": "1.1.0",
+  "description": "tools component calculator for iqrpg",
   "license": "Unlicense",
   "scripts": {
     "serve": "vue-cli-service serve",
